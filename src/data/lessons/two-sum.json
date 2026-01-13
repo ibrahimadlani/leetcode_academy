@@ -90,5 +90,10 @@
       "code": "return [hashmap[complement], i]\nreturn [0, 1]",
       "tip": "Time complexity: O(n) - we traverse the array once. Space complexity: O(n) - we store at most n elements in the HashMap."
     }
-  ]
+  ],
+  "solutions": {
+    "python": "class Solution:\n    def twoSum(self, nums: List[int], target: int) -> List[int]:\n        hashmap = {}  # value -> index\n        \n        for i, num in enumerate(nums):\n            complement = target - num\n            \n            if complement in hashmap:\n                return [hashmap[complement], i]\n            \n            hashmap[num] = i\n        \n        return []  # No solution found",
+    "java": "class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> map = new HashMap<>();\n        \n        for (int i = 0; i < nums.length; i++) {\n            int complement = target - nums[i];\n            \n            if (map.containsKey(complement)) {\n                return new int[] { map.get(complement), i };\n            }\n            \n            map.put(nums[i], i);\n        }\n        \n        return new int[] {};  // No solution found\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        unordered_map<int, int> hashmap;  // value -> index\n        \n        for (int i = 0; i < nums.size(); i++) {\n            int complement = target - nums[i];\n            \n            if (hashmap.find(complement) != hashmap.end()) {\n                return { hashmap[complement], i };\n            }\n            \n            hashmap[nums[i]] = i;\n        }\n        \n        return {};  // No solution found\n    }\n};"
+  }
 }

@@ -187,5 +187,10 @@
       "code": "return prev",
       "tip": "Time complexity: O(n) - we visit each node once. Space complexity: O(1) - we only use three pointers."
     }
-  ]
+  ],
+  "solutions": {
+    "python": "class Solution:\n    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:\n        prev = None\n        curr = head\n        \n        while curr:\n            next_node = curr.next  # Save next\n            curr.next = prev       # Reverse link\n            prev = curr            # Move prev forward\n            curr = next_node       # Move curr forward\n        \n        return prev",
+    "java": "class Solution {\n    public ListNode reverseList(ListNode head) {\n        ListNode prev = null;\n        ListNode curr = head;\n        \n        while (curr != null) {\n            ListNode nextNode = curr.next;  // Save next\n            curr.next = prev;               // Reverse link\n            prev = curr;                    // Move prev forward\n            curr = nextNode;                // Move curr forward\n        }\n        \n        return prev;\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    ListNode* reverseList(ListNode* head) {\n        ListNode* prev = nullptr;\n        ListNode* curr = head;\n        \n        while (curr != nullptr) {\n            ListNode* nextNode = curr->next;  // Save next\n            curr->next = prev;                // Reverse link\n            prev = curr;                      // Move prev forward\n            curr = nextNode;                  // Move curr forward\n        }\n        \n        return prev;\n    }\n};"
+  }
 }

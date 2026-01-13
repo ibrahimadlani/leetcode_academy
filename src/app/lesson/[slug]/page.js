@@ -26,6 +26,7 @@ export default function LessonPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [lesson, setLesson] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [language, setLanguage] = useState("python");
 
   useEffect(() => {
     async function loadLesson() {
@@ -125,7 +126,11 @@ export default function LessonPage() {
 
   return (
     <div className="h-screen flex flex-col">
-      <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <Header
+        onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+        language={language}
+        onLanguageChange={setLanguage}
+      />
 
       <div className="flex-1 flex overflow-hidden">
         <LeftSidebar
@@ -153,6 +158,7 @@ export default function LessonPage() {
           totalSteps={totalSteps}
           onPrevious={previousStep}
           onNext={nextStep}
+          language={language}
         />
       </div>
     </div>

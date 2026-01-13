@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Code } from "lucide-react";
+import CodeBlock from "@/components/CodeBlock";
 
 export default function RightSidebar({
   lesson,
@@ -13,6 +14,7 @@ export default function RightSidebar({
   totalSteps,
   onPrevious,
   onNext,
+  language = "python",
 }) {
   if (!lesson) {
     return (
@@ -23,6 +25,8 @@ export default function RightSidebar({
   }
 
   const step = lesson.steps?.[currentStep];
+  const isLastStep = currentStep === totalSteps - 1;
+  const solution = lesson.solutions?.[language];
 
   return (
     <aside className="w-96 border-l h-full flex flex-col">
@@ -41,7 +45,7 @@ export default function RightSidebar({
 
       <ScrollArea className="flex-1 p-4">
         {step && (
-          <Card>
+          <Card className="mb-4">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm">
                 Step {currentStep + 1} of {totalSteps}
@@ -51,16 +55,32 @@ export default function RightSidebar({
               <p className="text-sm leading-relaxed">{step.explanation}</p>
 
               {step.code && (
-                <pre className="mt-4 p-3 bg-muted rounded-md text-xs overflow-x-auto">
-                  <code>{step.code}</code>
-                </pre>
+                <div className="mt-4">
+                  <CodeBlock code={step.code} language={language} />
+                </div>
               )}
 
               {step.tip && (
-                <div className="mt-4 p-3 bg-blue-500/10 rounded-md">
-                  <p className="text-sm text-blue-500">{step.tip}</p>
+                <div className="mt-4 p-3 bg-blue-500/10 rounded-md border border-blue-500/20">
+                  <p className="text-sm text-blue-600 dark:text-blue-400">
+                    {step.tip}
+                  </p>
                 </div>
               )}
+            </CardContent>
+          </Card>
+        )}
+
+        {isLastStep && solution && (
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Code className="h-4 w-4" />
+                Complete Solution
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CodeBlock code={solution} language={language} />
             </CardContent>
           </Card>
         )}

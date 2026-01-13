@@ -185,5 +185,10 @@
       "code": "return all(count == 0 for count in counts.values())\nreturn True",
       "tip": "Time complexity: O(n) where n is the length of the strings. Space complexity: O(1) since we have at most 26 letters."
     }
-  ]
+  ],
+  "solutions": {
+    "python": "class Solution:\n    def isAnagram(self, s: str, t: str) -> bool:\n        if len(s) != len(t):\n            return False\n        \n        count = {}\n        \n        for char in s:\n            count[char] = count.get(char, 0) + 1\n        \n        for char in t:\n            if char not in count:\n                return False\n            count[char] -= 1\n            if count[char] < 0:\n                return False\n        \n        return True",
+    "java": "class Solution {\n    public boolean isAnagram(String s, String t) {\n        if (s.length() != t.length()) {\n            return false;\n        }\n        \n        int[] count = new int[26];\n        \n        for (char c : s.toCharArray()) {\n            count[c - 'a']++;\n        }\n        \n        for (char c : t.toCharArray()) {\n            count[c - 'a']--;\n            if (count[c - 'a'] < 0) {\n                return false;\n            }\n        }\n        \n        return true;\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    bool isAnagram(string s, string t) {\n        if (s.length() != t.length()) {\n            return false;\n        }\n        \n        vector<int> count(26, 0);\n        \n        for (char c : s) {\n            count[c - 'a']++;\n        }\n        \n        for (char c : t) {\n            count[c - 'a']--;\n            if (count[c - 'a'] < 0) {\n                return false;\n            }\n        }\n        \n        return true;\n    }\n};"
+  }
 }

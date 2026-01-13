@@ -151,5 +151,10 @@
       "code": "return True",
       "tip": "Time complexity: O(n) - we traverse the array once. Space complexity: O(n) - we store at most n elements in the HashSet."
     }
-  ]
+  ],
+  "solutions": {
+    "python": "class Solution:\n    def containsDuplicate(self, nums: List[int]) -> bool:\n        seen = set()\n        \n        for num in nums:\n            if num in seen:\n                return True\n            seen.add(num)\n        \n        return False",
+    "java": "class Solution {\n    public boolean containsDuplicate(int[] nums) {\n        Set<Integer> seen = new HashSet<>();\n        \n        for (int num : nums) {\n            if (seen.contains(num)) {\n                return true;\n            }\n            seen.add(num);\n        }\n        \n        return false;\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    bool containsDuplicate(vector<int>& nums) {\n        unordered_set<int> seen;\n        \n        for (int num : nums) {\n            if (seen.find(num) != seen.end()) {\n                return true;\n            }\n            seen.insert(num);\n        }\n        \n        return false;\n    }\n};"
+  }
 }

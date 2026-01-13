@@ -11,13 +11,18 @@ import chapters from "@/data/chapters.json";
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [currentLesson, setCurrentLesson] = useState(null);
+  const [language, setLanguage] = useState("python");
 
   const totalSteps = currentLesson?.steps?.length || 0;
   const { currentStep, nextStep, previousStep } = useAnimation(totalSteps);
 
   return (
     <div className="h-screen flex flex-col">
-      <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <Header
+        onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+        language={language}
+        onLanguageChange={setLanguage}
+      />
 
       <div className="flex-1 flex overflow-hidden">
         <LeftSidebar
@@ -47,6 +52,7 @@ export default function Home() {
           totalSteps={totalSteps}
           onPrevious={previousStep}
           onNext={nextStep}
+          language={language}
         />
       </div>
     </div>
