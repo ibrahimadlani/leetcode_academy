@@ -1,0 +1,155 @@
+{
+  "id": "contains-duplicate",
+  "title": "Contains Duplicate",
+  "difficulty": "Easy",
+  "category": "Arrays & Hashing",
+  "number": 217,
+  "description": "Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.",
+  "steps": [
+    {
+      "id": 1,
+      "explanation": "We have an array [1, 2, 3, 1]. We need to check if any number appears more than once. A HashSet is perfect for this - it only stores unique values.",
+      "visualState": {
+        "array": {
+          "values": [1, 2, 3, 1],
+          "highlight": [],
+          "pointers": {}
+        },
+        "hashset": {
+          "values": []
+        }
+      },
+      "tip": "A HashSet has O(1) lookup and insertion, making it ideal for duplicate detection."
+    },
+    {
+      "id": 2,
+      "explanation": "Start at index 0. The number is 1. Check if 1 is already in the HashSet.",
+      "visualState": {
+        "array": {
+          "values": [1, 2, 3, 1],
+          "highlight": [0],
+          "pointers": { "i": 0 },
+          "states": { "0": "current" }
+        },
+        "hashset": {
+          "values": []
+        }
+      },
+      "code": "if nums[i] in seen:\n    return True"
+    },
+    {
+      "id": 3,
+      "explanation": "1 is not in the HashSet (it's empty). Add 1 to the set and continue.",
+      "visualState": {
+        "array": {
+          "values": [1, 2, 3, 1],
+          "highlight": [0],
+          "pointers": { "i": 0 },
+          "states": { "0": "success" }
+        },
+        "hashset": {
+          "values": [1],
+          "states": { "1": "new" }
+        }
+      },
+      "code": "seen.add(nums[i])\nseen.add(1)"
+    },
+    {
+      "id": 4,
+      "explanation": "Move to index 1. The number is 2. Check if 2 is in the HashSet.",
+      "visualState": {
+        "array": {
+          "values": [1, 2, 3, 1],
+          "highlight": [1],
+          "pointers": { "i": 1 },
+          "states": { "1": "current" }
+        },
+        "hashset": {
+          "values": [1],
+          "highlightValues": []
+        }
+      }
+    },
+    {
+      "id": 5,
+      "explanation": "2 is not in the set. Add 2 and continue.",
+      "visualState": {
+        "array": {
+          "values": [1, 2, 3, 1],
+          "highlight": [1],
+          "pointers": { "i": 1 },
+          "states": { "1": "success" }
+        },
+        "hashset": {
+          "values": [1, 2],
+          "states": { "2": "new" }
+        }
+      }
+    },
+    {
+      "id": 6,
+      "explanation": "Move to index 2. The number is 3. Check if 3 is in the HashSet.",
+      "visualState": {
+        "array": {
+          "values": [1, 2, 3, 1],
+          "highlight": [2],
+          "pointers": { "i": 2 },
+          "states": { "2": "current" }
+        },
+        "hashset": {
+          "values": [1, 2]
+        }
+      }
+    },
+    {
+      "id": 7,
+      "explanation": "3 is not in the set. Add 3 and continue.",
+      "visualState": {
+        "array": {
+          "values": [1, 2, 3, 1],
+          "highlight": [2],
+          "pointers": { "i": 2 },
+          "states": { "2": "success" }
+        },
+        "hashset": {
+          "values": [1, 2, 3],
+          "states": { "3": "new" }
+        }
+      }
+    },
+    {
+      "id": 8,
+      "explanation": "Move to index 3. The number is 1. Check if 1 is in the HashSet.",
+      "visualState": {
+        "array": {
+          "values": [1, 2, 3, 1],
+          "highlight": [3],
+          "pointers": { "i": 3 },
+          "states": { "3": "current" }
+        },
+        "hashset": {
+          "values": [1, 2, 3],
+          "highlightValues": [1],
+          "states": { "1": "highlight" }
+        }
+      }
+    },
+    {
+      "id": 9,
+      "explanation": "1 IS already in the HashSet! We found a duplicate. Return true.",
+      "visualState": {
+        "array": {
+          "values": [1, 2, 3, 1],
+          "highlight": [0, 3],
+          "states": { "0": "error", "3": "error" }
+        },
+        "hashset": {
+          "values": [1, 2, 3],
+          "states": { "1": "duplicate" }
+        }
+      },
+      "code": "return True",
+      "tip": "Time complexity: O(n) - we traverse the array once. Space complexity: O(n) - we store at most n elements in the HashSet."
+    }
+  ]
+}

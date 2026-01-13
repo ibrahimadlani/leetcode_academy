@@ -1,0 +1,94 @@
+{
+  "id": "two-sum",
+  "title": "Two Sum",
+  "difficulty": "Easy",
+  "category": "Arrays & Hashing",
+  "number": 1,
+  "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+  "steps": [
+    {
+      "id": 1,
+      "explanation": "We have an array [2, 7, 11, 15] and target = 9. We need to find two numbers that sum to 9. The brute force approach would check every pair, but we can do better with a HashMap.",
+      "visualState": {
+        "array": {
+          "values": [2, 7, 11, 15],
+          "highlight": [],
+          "pointers": {}
+        },
+        "hashmap": {
+          "entries": []
+        }
+      },
+      "tip": "A HashMap allows O(1) lookup, so we can check if the complement exists instantly."
+    },
+    {
+      "id": 2,
+      "explanation": "Start at index 0. The current number is 2. The complement we need is target - current = 9 - 2 = 7. Check if 7 exists in the HashMap.",
+      "visualState": {
+        "array": {
+          "values": [2, 7, 11, 15],
+          "highlight": [0],
+          "pointers": { "i": 0 },
+          "states": { "0": "current" }
+        },
+        "hashmap": {
+          "entries": []
+        }
+      },
+      "code": "complement = target - nums[i]\ncomplement = 9 - 2 = 7"
+    },
+    {
+      "id": 3,
+      "explanation": "7 is not in the HashMap (it's empty). Store the current number (2) with its index (0) in the HashMap, then move to the next element.",
+      "visualState": {
+        "array": {
+          "values": [2, 7, 11, 15],
+          "highlight": [0],
+          "pointers": { "i": 0 },
+          "states": { "0": "success" }
+        },
+        "hashmap": {
+          "entries": [{ "key": 2, "value": 0 }],
+          "states": { "2": "new" }
+        }
+      },
+      "code": "hashmap[nums[i]] = i\nhashmap[2] = 0"
+    },
+    {
+      "id": 4,
+      "explanation": "Move to index 1. The current number is 7. The complement is 9 - 7 = 2. Check if 2 exists in the HashMap.",
+      "visualState": {
+        "array": {
+          "values": [2, 7, 11, 15],
+          "highlight": [1],
+          "pointers": { "i": 1 },
+          "states": { "1": "current" }
+        },
+        "hashmap": {
+          "entries": [{ "key": 2, "value": 0 }],
+          "highlightKeys": [2],
+          "states": { "2": "checking" }
+        }
+      },
+      "code": "complement = target - nums[i]\ncomplement = 9 - 7 = 2"
+    },
+    {
+      "id": 5,
+      "explanation": "2 IS in the HashMap at index 0! We found our pair: nums[0] + nums[1] = 2 + 7 = 9. Return [0, 1].",
+      "visualState": {
+        "array": {
+          "values": [2, 7, 11, 15],
+          "highlight": [0, 1],
+          "pointers": {},
+          "states": { "0": "success", "1": "success" }
+        },
+        "hashmap": {
+          "entries": [{ "key": 2, "value": 0 }],
+          "states": { "2": "found" }
+        }
+      },
+      "code": "return [hashmap[complement], i]\nreturn [0, 1]",
+      "tip": "Time complexity: O(n) - we traverse the array once. Space complexity: O(n) - we store at most n elements in the HashMap."
+    }
+  ]
+}

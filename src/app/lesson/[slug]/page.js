@@ -9,6 +9,7 @@ import VisualizationCanvas from "@/components/canvas/VisualizationCanvas";
 import ArrayViz from "@/components/visualizations/ArrayViz";
 import LinkedListViz from "@/components/visualizations/LinkedListViz";
 import HashMapViz from "@/components/visualizations/HashMapViz";
+import HashSetViz from "@/components/visualizations/HashSetViz";
 import { useAnimation } from "@/hooks/useAnimation";
 import chapters from "@/data/chapters.json";
 
@@ -93,6 +94,16 @@ export default function LessonPage() {
           key="linkedlist"
           data={visualState.linkedList}
           label={visualState.linkedListLabel || "Linked List"}
+        />
+      );
+    }
+
+    if (visualState.hashset) {
+      components.push(
+        <HashSetViz
+          key="hashset"
+          data={visualState.hashset}
+          label={visualState.hashsetLabel || "HashSet"}
         />
       );
     }

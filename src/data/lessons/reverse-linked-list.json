@@ -1,0 +1,191 @@
+{
+  "id": "reverse-linked-list",
+  "title": "Reverse Linked List",
+  "difficulty": "Easy",
+  "category": "Linked List",
+  "number": 206,
+  "description": "Given the head of a singly linked list, reverse the list, and return the reversed list.",
+  "steps": [
+    {
+      "id": 1,
+      "explanation": "We have a linked list: 1 -> 2 -> 3 -> 4 -> 5 -> null. We need to reverse all the arrows. We'll use three pointers: prev, current, and next.",
+      "visualState": {
+        "linkedList": {
+          "nodes": [
+            { "value": 1 },
+            { "value": 2 },
+            { "value": 3 },
+            { "value": 4 },
+            { "value": 5 }
+          ],
+          "pointers": {},
+          "states": {}
+        }
+      },
+      "tip": "We need to be careful not to lose the reference to the next node when reversing."
+    },
+    {
+      "id": 2,
+      "explanation": "Initialize: prev = null, current = head (node 1). We'll reverse by making current.next point to prev.",
+      "visualState": {
+        "linkedList": {
+          "nodes": [
+            { "value": 1 },
+            { "value": 2 },
+            { "value": 3 },
+            { "value": 4 },
+            { "value": 5 }
+          ],
+          "pointers": { "curr": 0 },
+          "states": { "0": "current" }
+        }
+      },
+      "code": "prev = None\ncurr = head"
+    },
+    {
+      "id": 3,
+      "explanation": "Save the next node before we break the link: next = current.next (node 2).",
+      "visualState": {
+        "linkedList": {
+          "nodes": [
+            { "value": 1 },
+            { "value": 2 },
+            { "value": 3 },
+            { "value": 4 },
+            { "value": 5 }
+          ],
+          "pointers": { "curr": 0, "next": 1 },
+          "states": { "0": "current", "1": "next" }
+        }
+      },
+      "code": "next_node = curr.next"
+    },
+    {
+      "id": 4,
+      "explanation": "Reverse the link: current.next = prev (null). Node 1 now points to nothing (it will be the new tail).",
+      "visualState": {
+        "linkedList": {
+          "nodes": [
+            { "value": 1 },
+            { "value": 2 },
+            { "value": 3 },
+            { "value": 4 },
+            { "value": 5 }
+          ],
+          "pointers": { "curr": 0, "next": 1 },
+          "states": { "0": "reversed" }
+        }
+      },
+      "code": "curr.next = prev  # 1 -> null"
+    },
+    {
+      "id": 5,
+      "explanation": "Move prev and current forward: prev = current, current = next. Now prev=1, current=2.",
+      "visualState": {
+        "linkedList": {
+          "nodes": [
+            { "value": 1 },
+            { "value": 2 },
+            { "value": 3 },
+            { "value": 4 },
+            { "value": 5 }
+          ],
+          "pointers": { "prev": 0, "curr": 1 },
+          "states": { "0": "reversed", "1": "current" }
+        }
+      },
+      "code": "prev = curr\ncurr = next_node"
+    },
+    {
+      "id": 6,
+      "explanation": "Repeat: Save next (node 3), reverse link (2 -> 1), move pointers.",
+      "visualState": {
+        "linkedList": {
+          "nodes": [
+            { "value": 1 },
+            { "value": 2 },
+            { "value": 3 },
+            { "value": 4 },
+            { "value": 5 }
+          ],
+          "pointers": { "prev": 1, "curr": 2 },
+          "states": { "0": "reversed", "1": "reversed", "2": "current" }
+        }
+      },
+      "code": "# 2 -> 1 -> null"
+    },
+    {
+      "id": 7,
+      "explanation": "Continue: Reverse node 3 to point to node 2.",
+      "visualState": {
+        "linkedList": {
+          "nodes": [
+            { "value": 1 },
+            { "value": 2 },
+            { "value": 3 },
+            { "value": 4 },
+            { "value": 5 }
+          ],
+          "pointers": { "prev": 2, "curr": 3 },
+          "states": { "0": "reversed", "1": "reversed", "2": "reversed", "3": "current" }
+        }
+      },
+      "code": "# 3 -> 2 -> 1 -> null"
+    },
+    {
+      "id": 8,
+      "explanation": "Continue: Reverse node 4 to point to node 3.",
+      "visualState": {
+        "linkedList": {
+          "nodes": [
+            { "value": 1 },
+            { "value": 2 },
+            { "value": 3 },
+            { "value": 4 },
+            { "value": 5 }
+          ],
+          "pointers": { "prev": 3, "curr": 4 },
+          "states": { "0": "reversed", "1": "reversed", "2": "reversed", "3": "reversed", "4": "current" }
+        }
+      },
+      "code": "# 4 -> 3 -> 2 -> 1 -> null"
+    },
+    {
+      "id": 9,
+      "explanation": "Final step: Reverse node 5 to point to node 4. current becomes null, loop ends.",
+      "visualState": {
+        "linkedList": {
+          "nodes": [
+            { "value": 1 },
+            { "value": 2 },
+            { "value": 3 },
+            { "value": 4 },
+            { "value": 5 }
+          ],
+          "pointers": { "prev": 4 },
+          "states": { "0": "reversed", "1": "reversed", "2": "reversed", "3": "reversed", "4": "reversed" }
+        }
+      },
+      "code": "# 5 -> 4 -> 3 -> 2 -> 1 -> null"
+    },
+    {
+      "id": 10,
+      "explanation": "Return prev as the new head. The list is now reversed: 5 -> 4 -> 3 -> 2 -> 1 -> null.",
+      "visualState": {
+        "linkedList": {
+          "nodes": [
+            { "value": 5 },
+            { "value": 4 },
+            { "value": 3 },
+            { "value": 2 },
+            { "value": 1 }
+          ],
+          "pointers": { "head": 0 },
+          "states": { "0": "current", "1": "reversed", "2": "reversed", "3": "reversed", "4": "reversed" }
+        }
+      },
+      "code": "return prev",
+      "tip": "Time complexity: O(n) - we visit each node once. Space complexity: O(1) - we only use three pointers."
+    }
+  ]
+}

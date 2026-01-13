@@ -1,0 +1,189 @@
+{
+  "id": "valid-anagram",
+  "title": "Valid Anagram",
+  "difficulty": "Easy",
+  "category": "Arrays & Hashing",
+  "number": 242,
+  "description": "Given two strings s and t, return true if t is an anagram of s, and false otherwise. An anagram uses the exact same characters with the same frequencies.",
+  "steps": [
+    {
+      "id": 1,
+      "explanation": "We have s = 'anagram' and t = 'nagaram'. An anagram has the same characters with the same frequency. We'll use a HashMap to count character frequencies.",
+      "visualState": {
+        "array": {
+          "values": ["a", "n", "a", "g", "r", "a", "m"],
+          "highlight": []
+        },
+        "arrayLabel": "s = 'anagram'",
+        "hashmap": {
+          "entries": []
+        },
+        "hashmapLabel": "Character Count"
+      },
+      "tip": "If lengths are different, they can't be anagrams - we can check this first as an optimization."
+    },
+    {
+      "id": 2,
+      "explanation": "First, count all characters in string s. Start with 'a'.",
+      "visualState": {
+        "array": {
+          "values": ["a", "n", "a", "g", "r", "a", "m"],
+          "highlight": [0],
+          "pointers": { "i": 0 },
+          "states": { "0": "current" }
+        },
+        "arrayLabel": "s = 'anagram'",
+        "hashmap": {
+          "entries": [{ "key": "a", "value": 1 }],
+          "states": { "a": "new" }
+        },
+        "hashmapLabel": "Character Count"
+      },
+      "code": "count[char] = count.get(char, 0) + 1"
+    },
+    {
+      "id": 3,
+      "explanation": "Continue counting: 'n'.",
+      "visualState": {
+        "array": {
+          "values": ["a", "n", "a", "g", "r", "a", "m"],
+          "highlight": [1],
+          "pointers": { "i": 1 },
+          "states": { "1": "current" }
+        },
+        "arrayLabel": "s = 'anagram'",
+        "hashmap": {
+          "entries": [
+            { "key": "a", "value": 1 },
+            { "key": "n", "value": 1 }
+          ],
+          "states": { "n": "new" }
+        },
+        "hashmapLabel": "Character Count"
+      }
+    },
+    {
+      "id": 4,
+      "explanation": "Another 'a' - increment the count to 2.",
+      "visualState": {
+        "array": {
+          "values": ["a", "n", "a", "g", "r", "a", "m"],
+          "highlight": [2],
+          "pointers": { "i": 2 },
+          "states": { "2": "current" }
+        },
+        "arrayLabel": "s = 'anagram'",
+        "hashmap": {
+          "entries": [
+            { "key": "a", "value": 2 },
+            { "key": "n", "value": 1 }
+          ],
+          "states": { "a": "highlight" }
+        },
+        "hashmapLabel": "Character Count"
+      }
+    },
+    {
+      "id": 5,
+      "explanation": "After counting all characters in s, we have: a=3, n=1, g=1, r=1, m=1.",
+      "visualState": {
+        "array": {
+          "values": ["a", "n", "a", "g", "r", "a", "m"],
+          "highlight": [],
+          "states": {}
+        },
+        "arrayLabel": "s = 'anagram' (counted)",
+        "hashmap": {
+          "entries": [
+            { "key": "a", "value": 3 },
+            { "key": "n", "value": 1 },
+            { "key": "g", "value": 1 },
+            { "key": "r", "value": 1 },
+            { "key": "m", "value": 1 }
+          ]
+        },
+        "hashmapLabel": "Character Count"
+      }
+    },
+    {
+      "id": 6,
+      "explanation": "Now process string t = 'nagaram'. For each character, decrement the count. Start with 'n'.",
+      "visualState": {
+        "array": {
+          "values": ["n", "a", "g", "a", "r", "a", "m"],
+          "highlight": [0],
+          "pointers": { "i": 0 },
+          "states": { "0": "current" }
+        },
+        "arrayLabel": "t = 'nagaram'",
+        "hashmap": {
+          "entries": [
+            { "key": "a", "value": 3 },
+            { "key": "n", "value": 0 },
+            { "key": "g", "value": 1 },
+            { "key": "r", "value": 1 },
+            { "key": "m", "value": 1 }
+          ],
+          "states": { "n": "highlight" }
+        },
+        "hashmapLabel": "Character Count"
+      },
+      "code": "count[char] -= 1"
+    },
+    {
+      "id": 7,
+      "explanation": "Continue with 'a': decrement a from 3 to 2.",
+      "visualState": {
+        "array": {
+          "values": ["n", "a", "g", "a", "r", "a", "m"],
+          "highlight": [1],
+          "pointers": { "i": 1 },
+          "states": { "1": "current" }
+        },
+        "arrayLabel": "t = 'nagaram'",
+        "hashmap": {
+          "entries": [
+            { "key": "a", "value": 2 },
+            { "key": "n", "value": 0 },
+            { "key": "g", "value": 1 },
+            { "key": "r", "value": 1 },
+            { "key": "m", "value": 1 }
+          ],
+          "states": { "a": "highlight" }
+        },
+        "hashmapLabel": "Character Count"
+      }
+    },
+    {
+      "id": 8,
+      "explanation": "After processing all of t, all counts should be 0 for a valid anagram.",
+      "visualState": {
+        "array": {
+          "values": ["n", "a", "g", "a", "r", "a", "m"],
+          "highlight": [],
+          "states": {}
+        },
+        "arrayLabel": "t = 'nagaram' (processed)",
+        "hashmap": {
+          "entries": [
+            { "key": "a", "value": 0 },
+            { "key": "n", "value": 0 },
+            { "key": "g", "value": 0 },
+            { "key": "r", "value": 0 },
+            { "key": "m", "value": 0 }
+          ],
+          "states": {
+            "a": "found",
+            "n": "found",
+            "g": "found",
+            "r": "found",
+            "m": "found"
+          }
+        },
+        "hashmapLabel": "Character Count"
+      },
+      "code": "return all(count == 0 for count in counts.values())\nreturn True",
+      "tip": "Time complexity: O(n) where n is the length of the strings. Space complexity: O(1) since we have at most 26 letters."
+    }
+  ]
+}
