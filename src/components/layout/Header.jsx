@@ -13,6 +13,7 @@ import {
 import { Menu, Moon, Sun } from "lucide-react";
 import Logo from "@/components/Logo";
 import UserMenu from "@/components/UserMenu";
+import MainNav from "@/components/MainNav";
 
 const languages = [
   { value: "python", label: "Python" },
@@ -33,39 +34,49 @@ export default function Header({ onToggleSidebar, language, onLanguageChange }) 
   };
 
   return (
-    <header className="h-14 border-b flex items-center px-4 gap-4">
-      <Button variant="ghost" size="icon" onClick={onToggleSidebar}>
-        <Menu className="h-5 w-5" />
-      </Button>
+    <header className="h-14 border-b flex items-center px-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      {/* Left section */}
+      <div className="flex items-center gap-4 flex-1">
+        {onToggleSidebar && (
+          <Button variant="ghost" size="icon" onClick={onToggleSidebar}>
+            <Menu className="h-5 w-5" />
+          </Button>
+        )}
+        <Logo size="small" />
+      </div>
 
-      <Logo size="small" />
+      {/* Center section - Navigation */}
+      <MainNav />
 
-      <div className="flex-1" />
+      {/* Right section */}
+      <div className="flex items-center gap-2 flex-1 justify-end">
+        {onLanguageChange && (
+          <Select value={language} onValueChange={onLanguageChange}>
+            <SelectTrigger className="w-32">
+              <SelectValue placeholder="Language" />
+            </SelectTrigger>
+            <SelectContent>
+              {languages.map((lang) => (
+                <SelectItem key={lang.value} value={lang.value}>
+                  {lang.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
 
-      <Select value={language} onValueChange={onLanguageChange}>
-        <SelectTrigger className="w-32">
-          <SelectValue placeholder="Language" />
-        </SelectTrigger>
-        <SelectContent>
-          {languages.map((lang) => (
-            <SelectItem key={lang.value} value={lang.value}>
-              {lang.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        {mounted && (
+          <Button variant="ghost" size="icon" onClick={toggleTheme}>
+            {resolvedTheme === "dark" ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </Button>
+        )}
 
-      {mounted && (
-        <Button variant="ghost" size="icon" onClick={toggleTheme}>
-          {resolvedTheme === "dark" ? (
-            <Sun className="h-5 w-5" />
-          ) : (
-            <Moon className="h-5 w-5" />
-          )}
-        </Button>
-      )}
-
-      <UserMenu />
+        <UserMenu />
+      </div>
     </header>
   );
 }
