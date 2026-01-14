@@ -51,11 +51,11 @@ export default function RightSidebar({
                 Step {currentStep + 1} of {totalSteps}
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-hidden">
               <p className="text-sm leading-relaxed">{step.explanation}</p>
 
               {step.code && (
-                <div className="mt-4">
+                <div className="mt-4 overflow-hidden">
                   <CodeBlock code={step.code} language={language} />
                 </div>
               )}
@@ -79,7 +79,7 @@ export default function RightSidebar({
                 Complete Solution
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-hidden">
               <CodeBlock code={solution} language={language} />
             </CardContent>
           </Card>

@@ -70,14 +70,14 @@ export default function LeftSidebar({ isOpen, chapters, currentLesson }) {
                         key={problem.id}
                         href={`/lesson/${problem.id}`}
                         className={cn(
-                          "flex items-center justify-between text-sm py-1.5 px-2 rounded-md hover:bg-accent",
+                          "flex items-center gap-2 text-sm py-1.5 px-2 rounded-md hover:bg-accent overflow-hidden",
                           currentLesson === problem.id && "bg-accent"
                         )}
                       >
-                        <span className="truncate">{problem.title}</span>
+                        <span className="truncate flex-1 min-w-0">{problem.title}</span>
                         <Badge
                           variant="secondary"
-                          className={cn("ml-2 text-xs", difficultyColors[problem.difficulty])}
+                          className={cn("text-xs shrink-0", difficultyColors[problem.difficulty])}
                         >
                           {problem.difficulty}
                         </Badge>
