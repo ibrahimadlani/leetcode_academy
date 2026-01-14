@@ -1,6 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -88,13 +89,13 @@ export default function LoginForm() {
 
             <p className="text-center text-sm text-muted-foreground">
               By continuing, you agree to our{" "}
-              <a href="#" className="underline hover:text-foreground">
+              <Link href="/terms" className="underline hover:text-foreground">
                 Terms of Service
-              </a>{" "}
+              </Link>{" "}
               and{" "}
-              <a href="#" className="underline hover:text-foreground">
+              <Link href="/privacy" className="underline hover:text-foreground">
                 Privacy Policy
-              </a>
+              </Link>
             </p>
           </CardContent>
         </Card>
