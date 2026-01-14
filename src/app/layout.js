@@ -1,6 +1,7 @@
 import { Geist, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SessionProvider } from "@/components/SessionProvider";
+import { FirebaseProvider } from "@/components/FirebaseProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,7 +26,9 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${jetbrainsMono.variable} antialiased`}
       >
         <SessionProvider>
-          <ThemeProvider>{children}</ThemeProvider>
+          <FirebaseProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+          </FirebaseProvider>
         </SessionProvider>
       </body>
     </html>
