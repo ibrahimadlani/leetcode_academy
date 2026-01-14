@@ -11,6 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Menu, Moon, Sun } from "lucide-react";
+import Logo from "@/components/Logo";
+import UserMenu from "@/components/UserMenu";
 
 const languages = [
   { value: "python", label: "Python" },
@@ -19,7 +21,7 @@ const languages = [
 ];
 
 export default function Header({ onToggleSidebar, language, onLanguageChange }) {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -36,10 +38,7 @@ export default function Header({ onToggleSidebar, language, onLanguageChange }) 
         <Menu className="h-5 w-5" />
       </Button>
 
-      <h1 className="text-lg font-semibold">LeetCode Academy</h1>
-      <span className="text-sm text-muted-foreground hidden sm:inline">
-        Blind75 Visualizer
-      </span>
+      <Logo size="small" />
 
       <div className="flex-1" />
 
@@ -65,6 +64,8 @@ export default function Header({ onToggleSidebar, language, onLanguageChange }) 
           )}
         </Button>
       )}
+
+      <UserMenu />
     </header>
   );
 }
