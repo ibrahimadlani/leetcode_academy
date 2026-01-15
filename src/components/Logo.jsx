@@ -27,28 +27,26 @@ export default function Logo({ size = "default", showText = true }) {
             width="36"
             height="36"
             rx="8"
-            className="fill-primary"
+            className="fill-pink-700"
           />
           {/* Left bracket */}
           <path
             d="M14 12L8 20L14 28"
-            stroke="currentColor"
+            stroke="white"
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="stroke-primary-foreground"
           />
           {/* Right bracket */}
           <path
             d="M26 12L32 20L26 28"
-            stroke="currentColor"
+            stroke="white"
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="stroke-primary-foreground"
           />
           {/* Center dot/node */}
-          <circle cx="20" cy="20" r="3" className="fill-primary-foreground" />
+          <circle cx="20" cy="20" r="3" fill="white" />
         </svg>
       </div>
       {showText && (

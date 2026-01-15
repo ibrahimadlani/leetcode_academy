@@ -3,9 +3,17 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import {
+  Elements,
+  CardNumberElement,
+  CardExpiryElement,
+  CardCvcElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -24,7 +33,6 @@ import {
   Check,
   Loader2,
   CreditCard,
-  Sparkles,
   AlertCircle,
   Zap,
   Infinity,
@@ -41,7 +49,6 @@ const plans = {
     period: "/year",
     description: "Accès complet pendant 1 an",
     icon: Zap,
-    gradient: "from-blue-500 to-cyan-500",
     features: [
       "Accès aux 75 problèmes Blind75",
       "Visualisations interactives",
@@ -57,7 +64,6 @@ const plans = {
     period: "",
     description: "Accès à vie, paiement unique",
     icon: Infinity,
-    gradient: "from-violet-500 to-purple-500",
     popular: true,
     features: [
       "Tout du plan Yearly",
@@ -72,8 +78,14 @@ const plans = {
 function CheckoutForm({ planId, clientSecret, onSuccess }) {
   const stripe = useStripe();
   const elements = useElements();
+  const { resolvedTheme } = useTheme();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
+  const [cardComplete, setCardComplete] = useState({
+    cardNumber: false,
+    cardExpiry: false,
+    cardCvc: false,
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -85,20 +97,16 @@ function CheckoutForm({ planId, clientSecret, onSuccess }) {
     setIsProcessing(true);
     setError(null);
 
-    const { error: submitError } = await elements.submit();
-    if (submitError) {
-      setError(submitError.message);
-      setIsProcessing(false);
-      return;
-    }
+    const cardElement = elements.getElement(CardNumberElement);
 
-    const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/checkout/success`,
-      },
-      redirect: "if_required",
-    });
+    const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(
+      clientSecret,
+      {
+        payment_method: {
+          card: cardElement,
+        },
+      }
+    );
 
     if (confirmError) {
       setError(confirmError.message);
@@ -108,19 +116,77 @@ function CheckoutForm({ planId, clientSecret, onSuccess }) {
     }
   };
 
+  const handleCardChange = (elementType) => (event) => {
+    setCardComplete((prev) => ({
+      ...prev,
+      [elementType]: event.complete,
+    }));
+    if (event.error) {
+      setError(event.error.message);
+    } else {
+      setError(null);
+    }
+  };
+
+  const isFormComplete = cardComplete.cardNumber && cardComplete.cardExpiry && cardComplete.cardCvc;
+
+  const stripeElementStyle = {
+    base: {
+      fontSize: "16px",
+      fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+      fontSmoothing: "antialiased",
+      color: resolvedTheme === "dark" ? "#fafafa" : "#09090b",
+      "::placeholder": {
+        color: resolvedTheme === "dark" ? "#71717a" : "#a1a1aa",
+      },
+    },
+    invalid: {
+      color: "#ef4444",
+      iconColor: "#ef4444",
+    },
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="bg-muted/30 rounded-xl p-6 border">
-        <PaymentElement
-          options={{
-            layout: "tabs",
-            defaultValues: {
-              billingDetails: {
-                email: "",
-              },
-            },
-          }}
-        />
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Card Number */}
+      <div className="space-y-2">
+        <Label htmlFor="cardNumber">Numéro de carte</Label>
+        <div className="relative">
+          <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 ring-offset-background focus-within:ring-2 focus-within:ring-pink-600 focus-within:ring-offset-2">
+            <CardNumberElement
+              id="cardNumber"
+              options={{ style: stripeElementStyle, showIcon: true }}
+              onChange={handleCardChange("cardNumber")}
+              className="w-full"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Expiry and CVC */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="cardExpiry">Date d'expiration</Label>
+          <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 ring-offset-background focus-within:ring-2 focus-within:ring-pink-600 focus-within:ring-offset-2">
+            <CardExpiryElement
+              id="cardExpiry"
+              options={{ style: stripeElementStyle }}
+              onChange={handleCardChange("cardExpiry")}
+              className="w-full"
+            />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="cardCvc">CVC</Label>
+          <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 ring-offset-background focus-within:ring-2 focus-within:ring-pink-600 focus-within:ring-offset-2">
+            <CardCvcElement
+              id="cardCvc"
+              options={{ style: stripeElementStyle }}
+              onChange={handleCardChange("cardCvc")}
+              className="w-full"
+            />
+          </div>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -129,9 +195,9 @@ function CheckoutForm({ planId, clientSecret, onSuccess }) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex items-center gap-2 p-4 bg-destructive/10 text-destructive rounded-lg border border-destructive/20"
+            className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive rounded-lg border border-destructive/20"
           >
-            <AlertCircle className="h-5 w-5 flex-shrink-0" />
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
             <p className="text-sm">{error}</p>
           </motion.div>
         )}
@@ -139,8 +205,8 @@ function CheckoutForm({ planId, clientSecret, onSuccess }) {
 
       <Button
         type="submit"
-        disabled={!stripe || isProcessing}
-        className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-violet-500 to-purple-500 hover:opacity-90 shadow-lg shadow-violet-500/25"
+        disabled={!stripe || isProcessing || !isFormComplete}
+        className="w-full h-12 text-base font-medium bg-pink-600 hover:bg-pink-700 text-white mt-6"
         size="lg"
       >
         {isProcessing ? (
@@ -150,20 +216,20 @@ function CheckoutForm({ planId, clientSecret, onSuccess }) {
           </>
         ) : (
           <>
-            <Lock className="mr-2 h-5 w-5" />
+            <Lock className="mr-2 h-4 w-4" />
             Payer ${plans[planId]?.price || 0}
           </>
         )}
       </Button>
 
-      <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+      <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-2">
         <div className="flex items-center gap-1">
-          <Shield className="h-4 w-4" />
+          <Shield className="h-3.5 w-3.5" />
           <span>Paiement sécurisé</span>
         </div>
         <div className="flex items-center gap-1">
-          <CreditCard className="h-4 w-4" />
-          <span>Cryptage SSL 256-bit</span>
+          <CreditCard className="h-3.5 w-3.5" />
+          <span>Cryptage SSL</span>
         </div>
       </div>
     </form>
@@ -264,8 +330,8 @@ function CheckoutContent() {
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Background effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-bl from-violet-500/5 to-transparent rounded-full blur-3xl" />
-        <div className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-gradient-to-tr from-primary/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-bl from-pink-600/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-gradient-to-tr from-pink-600/5 to-transparent rounded-full blur-3xl" />
       </div>
 
       <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
@@ -295,23 +361,20 @@ function CheckoutContent() {
             <Card className="sticky top-24">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-primary" />
                   Récapitulatif de la commande
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Plan details */}
                 <div className="flex items-start gap-4">
-                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${plan.gradient} p-0.5 flex-shrink-0`}>
-                    <div className="w-full h-full rounded-xl bg-background flex items-center justify-center">
-                      <Icon className="h-7 w-7" style={{ color: plan.popular ? '#8b5cf6' : '#3b82f6' }} />
-                    </div>
+                  <div className={`w-14 h-14 rounded-xl ${plan.popular ? "bg-pink-600/10" : "bg-muted"} flex items-center justify-center flex-shrink-0`}>
+                    <Icon className={`h-7 w-7 ${plan.popular ? "text-pink-600" : "text-muted-foreground"}`} />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold">{plan.name}</h3>
                       {plan.popular && (
-                        <Badge variant="secondary" className="text-xs">Populaire</Badge>
+                        <Badge className="text-xs bg-pink-600 text-white border-0">Populaire</Badge>
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground">{plan.description}</p>
@@ -332,7 +395,7 @@ function CheckoutContent() {
                         transition={{ delay: 0.2 + index * 0.05 }}
                         className="flex items-center gap-2 text-sm text-muted-foreground"
                       >
-                        <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                        <Check className="h-4 w-4 text-pink-600 flex-shrink-0" />
                         {feature}
                       </motion.li>
                     ))}
@@ -390,48 +453,7 @@ function CheckoutContent() {
               </CardHeader>
               <CardContent>
                 {clientSecret && (
-                  <Elements
-                    stripe={stripePromise}
-                    options={{
-                      clientSecret,
-                      appearance: {
-                        theme: "stripe",
-                        variables: {
-                          colorPrimary: "#8b5cf6",
-                          colorBackground: "hsl(var(--background))",
-                          colorText: "hsl(var(--foreground))",
-                          colorDanger: "hsl(var(--destructive))",
-                          fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-                          borderRadius: "8px",
-                          spacingUnit: "4px",
-                        },
-                        rules: {
-                          ".Input": {
-                            border: "1px solid hsl(var(--border))",
-                            boxShadow: "none",
-                            padding: "12px",
-                          },
-                          ".Input:focus": {
-                            border: "1px solid #8b5cf6",
-                            boxShadow: "0 0 0 1px #8b5cf6",
-                          },
-                          ".Label": {
-                            fontWeight: "500",
-                            fontSize: "14px",
-                            marginBottom: "8px",
-                          },
-                          ".Tab": {
-                            border: "1px solid hsl(var(--border))",
-                            borderRadius: "8px",
-                          },
-                          ".Tab--selected": {
-                            borderColor: "#8b5cf6",
-                            backgroundColor: "hsl(var(--background))",
-                          },
-                        },
-                      },
-                    }}
-                  >
+                  <Elements stripe={stripePromise} options={{ clientSecret }}>
                     <CheckoutForm
                       planId={planId}
                       clientSecret={clientSecret}

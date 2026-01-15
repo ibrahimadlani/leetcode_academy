@@ -15,24 +15,18 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   ArrowLeft,
   CreditCard,
-  Crown,
   Loader2,
   ExternalLink,
   Shield,
-  Sparkles,
   Calendar,
-  Mail,
-  User,
   CheckCircle,
   Zap,
   Infinity,
-  Clock,
-  AlertCircle,
   Settings,
-  Receipt,
 } from "lucide-react";
 import Logo from "@/components/Logo";
 import { db } from "@/lib/firebase";
@@ -64,8 +58,6 @@ const planDetails = {
   yearly: {
     name: "Premium Yearly",
     icon: Zap,
-    gradient: "from-blue-500 to-cyan-500",
-    color: "#3b82f6",
     features: [
       "Accès aux 75 problèmes Blind75",
       "Visualisations interactives",
@@ -77,8 +69,6 @@ const planDetails = {
   lifetime: {
     name: "Premium Lifetime",
     icon: Infinity,
-    gradient: "from-violet-500 to-purple-500",
-    color: "#8b5cf6",
     features: [
       "Accès à vie",
       "Toutes les futures mises à jour",
@@ -141,7 +131,6 @@ export default function BillingPage() {
 
   const isActive = subscription?.status === "active";
   const plan = isActive ? planDetails[subscription?.type] || planDetails.yearly : null;
-  const PlanIcon = plan?.icon || Crown;
 
   const formatDate = (timestamp) => {
     if (!timestamp) return null;
@@ -172,8 +161,8 @@ export default function BillingPage() {
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Background effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-3xl" />
-        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-violet-500/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-pink-600/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-pink-600/5 to-transparent rounded-full blur-3xl" />
       </div>
 
       <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
@@ -202,38 +191,64 @@ export default function BillingPage() {
             </p>
           </motion.div>
 
-          {/* Current Plan Card */}
+          {/* Profile & Plan Card */}
           <motion.div variants={itemVariants}>
             <Card className="overflow-hidden">
-              {isActive && (
-                <div className={`h-1 bg-gradient-to-r ${plan?.gradient || "from-primary to-primary"}`} />
-              )}
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl ${isActive ? `bg-gradient-to-br ${plan?.gradient}` : "bg-muted"} p-0.5`}>
-                      <div className="w-full h-full rounded-xl bg-background flex items-center justify-center">
-                        <PlanIcon className="h-5 w-5" style={{ color: plan?.color || "currentColor" }} />
-                      </div>
-                    </div>
-                    Plan actuel
-                  </CardTitle>
-                  <Badge
-                    variant={isActive ? "default" : "secondary"}
-                    className={isActive ? `bg-gradient-to-r ${plan?.gradient} text-white border-0` : ""}
-                  >
-                    {isActive ? (
-                      <>
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                        Actif
-                      </>
-                    ) : (
-                      "Gratuit"
-                    )}
-                  </Badge>
+              {/* Header */}
+              <div className={`h-24 ${isActive ? "bg-pink-600" : "bg-muted"}`} />
+
+              {/* Profile Content */}
+              <div className="relative px-6 pb-6">
+                {/* Avatar - overlapping header */}
+                <div className="flex justify-center -mt-12 mb-4">
+                  <Avatar className="h-24 w-24 ring-4 ring-background shadow-2xl">
+                    <AvatarImage src={session?.user?.image || ""} alt={session?.user?.name || "User"} />
+                    <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-700 dark:to-zinc-800 text-foreground">
+                      {session?.user?.name?.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2) || "U"}
+                    </AvatarFallback>
+                  </Avatar>
                 </div>
-              </CardHeader>
-              <CardContent>
+
+                {/* User Info */}
+                <div className="text-center space-y-3">
+                  <div>
+                    <h2 className="text-xl font-semibold">{session?.user?.name || "Utilisateur"}</h2>
+                    <p className="text-sm text-muted-foreground">{session?.user?.email}</p>
+                  </div>
+
+                  {/* Plan Badge */}
+                  <div className="flex flex-col items-center gap-2">
+                    <Badge
+                      variant={isActive ? "default" : "secondary"}
+                      className={`px-4 py-1 text-sm ${isActive ? "bg-pink-600 text-white border-0 hover:bg-pink-700" : ""}`}
+                    >
+                      {isActive ? (
+                        <>
+                          <CheckCircle className="h-3.5 w-3.5 mr-1.5" />
+                          {plan?.name}
+                        </>
+                      ) : (
+                        "Plan Gratuit"
+                      )}
+                    </Badge>
+                    {isActive && subscription?.type !== "lifetime" && subscription?.currentPeriodEnd && (
+                      <span className="text-xs text-muted-foreground flex items-center gap-1.5 bg-muted/50 px-3 py-1 rounded-full">
+                        <Calendar className="h-3 w-3" />
+                        Renouvellement le {formatDate(subscription.currentPeriodEnd)}
+                      </span>
+                    )}
+                    {isActive && subscription?.type === "lifetime" && (
+                      <span className="text-xs text-muted-foreground flex items-center gap-1.5 bg-muted/50 px-3 py-1 rounded-full">
+                        <Infinity className="h-3 w-3" />
+                        Accès à vie
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <Separator className="mx-6" />
+              <div className="p-6">
                 <AnimatePresence mode="wait">
                   {isActive ? (
                     <motion.div
@@ -243,25 +258,6 @@ export default function BillingPage() {
                       exit={{ opacity: 0 }}
                       className="space-y-6"
                     >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                          <h3 className="text-xl font-semibold">{plan?.name}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {subscription?.type === "lifetime"
-                              ? "Accès à vie - N&apos;expire jamais"
-                              : "Renouvellement annuel automatique"}
-                          </p>
-                        </div>
-                        {subscription?.type !== "lifetime" && subscription?.currentPeriodEnd && (
-                          <div className="flex items-center gap-2 text-sm bg-muted/50 px-4 py-2 rounded-lg">
-                            <Calendar className="h-4 w-4 text-muted-foreground" />
-                            <span>Prochain renouvellement : {formatDate(subscription.currentPeriodEnd)}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      <Separator />
-
                       {/* Features list */}
                       <div className="grid sm:grid-cols-2 gap-3">
                         {plan?.features.map((feature, index) => (
@@ -272,7 +268,7 @@ export default function BillingPage() {
                             transition={{ delay: index * 0.05 }}
                             className="flex items-center gap-2 text-sm"
                           >
-                            <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                            <CheckCircle className="h-4 w-4 text-pink-600 flex-shrink-0" />
                             <span>{feature}</span>
                           </motion.div>
                         ))}
@@ -306,18 +302,12 @@ export default function BillingPage() {
                       exit={{ opacity: 0 }}
                       className="space-y-6"
                     >
-                      <div className="text-center py-4">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
-                          <AlertCircle className="h-8 w-8 text-muted-foreground" />
-                        </div>
-                        <h3 className="text-xl font-semibold mb-2">Accès limité</h3>
-                        <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                      <div className="text-center">
+                        <p className="text-muted-foreground max-w-md mx-auto">
                           Passez à Premium pour débloquer toutes les visualisations,
                           solutions et fonctionnalités avancées.
                         </p>
                       </div>
-
-                      <Separator />
 
                       {/* Plan selection */}
                       <div className="grid sm:grid-cols-2 gap-4">
@@ -326,14 +316,12 @@ export default function BillingPage() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.1 }}
-                          className="relative p-4 rounded-xl border-2 border-border hover:border-blue-500/50 transition-colors cursor-pointer group"
+                          className="relative p-4 rounded-xl border border-border hover:border-pink-600/50 transition-colors cursor-pointer group"
                           onClick={() => router.push("/checkout?plan=yearly")}
                         >
                           <div className="flex items-start gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 p-0.5 flex-shrink-0">
-                              <div className="w-full h-full rounded-lg bg-background flex items-center justify-center">
-                                <Zap className="h-5 w-5 text-blue-500" />
-                              </div>
+                            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                              <Zap className="h-5 w-5 text-muted-foreground" />
                             </div>
                             <div className="flex-1">
                               <h4 className="font-semibold">Premium Yearly</h4>
@@ -343,7 +331,7 @@ export default function BillingPage() {
                           </div>
                           <Button
                             variant="outline"
-                            className="w-full mt-4 group-hover:border-blue-500 group-hover:text-blue-500"
+                            className="w-full mt-4 group-hover:border-pink-600 group-hover:text-pink-600"
                             onClick={(e) => {
                               e.stopPropagation();
                               router.push("/checkout?plan=yearly");
@@ -358,18 +346,15 @@ export default function BillingPage() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.2 }}
-                          className="relative p-4 rounded-xl border-2 border-violet-500/50 bg-violet-500/5 cursor-pointer group"
+                          className="relative p-4 rounded-xl border border-pink-600/50 bg-pink-600/5 cursor-pointer group"
                           onClick={() => router.push("/checkout?plan=lifetime")}
                         >
-                          <Badge className="absolute -top-2.5 left-4 bg-gradient-to-r from-violet-500 to-purple-500 text-white border-0">
-                            <Sparkles className="h-3 w-3 mr-1" />
+                          <Badge className="absolute -top-2.5 left-4 bg-pink-600 text-white border-0">
                             Recommandé
                           </Badge>
                           <div className="flex items-start gap-3 mt-2">
-                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-purple-500 p-0.5 flex-shrink-0">
-                              <div className="w-full h-full rounded-lg bg-background flex items-center justify-center">
-                                <Infinity className="h-5 w-5 text-violet-500" />
-                              </div>
+                            <div className="w-10 h-10 rounded-lg bg-pink-600/10 flex items-center justify-center flex-shrink-0">
+                              <Infinity className="h-5 w-5 text-pink-600" />
                             </div>
                             <div className="flex-1">
                               <h4 className="font-semibold">Premium Lifetime</h4>
@@ -378,13 +363,12 @@ export default function BillingPage() {
                             </div>
                           </div>
                           <Button
-                            className="w-full mt-4 bg-gradient-to-r from-violet-500 to-purple-500 text-white hover:opacity-90"
+                            className="w-full mt-4 bg-pink-600 text-white hover:bg-pink-700"
                             onClick={(e) => {
                               e.stopPropagation();
                               router.push("/checkout?plan=lifetime");
                             }}
                           >
-                            <Sparkles className="mr-2 h-4 w-4" />
                             Choisir ce plan
                           </Button>
                         </motion.div>
@@ -392,60 +376,7 @@ export default function BillingPage() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Account Info Card */}
-          <motion.div variants={itemVariants}>
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
-                  Informations du compte
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between py-3 border-b">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                        <User className="h-5 w-5 text-muted-foreground" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Nom</p>
-                        <p className="font-medium">{session?.user?.name || "Non défini"}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between py-3 border-b">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                        <Mail className="h-5 w-5 text-muted-foreground" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Email</p>
-                        <p className="font-medium">{session?.user?.email}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {isActive && subscription?.updatedAt && (
-                    <div className="flex items-center justify-between py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                          <Clock className="h-5 w-5 text-muted-foreground" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Membre depuis</p>
-                          <p className="font-medium">{formatDate(subscription.updatedAt)}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
+              </div>
             </Card>
           </motion.div>
 

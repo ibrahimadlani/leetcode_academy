@@ -15,7 +15,6 @@ import {
 import {
   CheckCircle,
   Loader2,
-  Sparkles,
   ArrowRight,
   PartyPopper,
   Code2,
@@ -133,15 +132,15 @@ function SuccessContent() {
             recycle={false}
             numberOfPieces={200}
             gravity={0.1}
-            colors={["#8b5cf6", "#6366f1", "#3b82f6", "#22c55e", "#eab308"]}
+            colors={["#db2777", "#ec4899", "#f472b6", "#22c55e", "#fafafa"]}
           />
         )}
       </AnimatePresence>
 
       {/* Background effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-br from-violet-500/20 to-transparent rounded-full blur-3xl" />
-        <div className="absolute -bottom-1/4 -left-1/4 w-full h-full bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-br from-pink-600/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute -bottom-1/4 -left-1/4 w-full h-full bg-gradient-to-tr from-pink-600/5 to-transparent rounded-full blur-3xl" />
       </div>
 
       <div className="min-h-screen flex items-center justify-center p-4 relative">
@@ -152,8 +151,8 @@ function SuccessContent() {
           className="max-w-2xl w-full"
         >
           <Card className="border-0 shadow-2xl bg-background/80 backdrop-blur-sm overflow-hidden">
-            {/* Gradient top bar */}
-            <div className="h-1 bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500" />
+            {/* Top bar */}
+            <div className="h-1 bg-pink-600" />
 
             <CardHeader className="text-center pt-12 pb-6">
               <motion.div variants={itemVariants} className="flex justify-center mb-6">
@@ -243,10 +242,10 @@ function SuccessContent() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.6 + index * 0.1 }}
-                            className="p-4 rounded-xl bg-muted/50 border border-border/50 hover:border-primary/30 transition-colors"
+                            className="p-4 rounded-xl bg-muted/50 border border-border/50 hover:border-pink-600/30 transition-colors"
                           >
-                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center mb-3">
-                              <Icon className="h-5 w-5 text-white" />
+                            <div className="w-10 h-10 rounded-lg bg-pink-600/10 flex items-center justify-center mb-3">
+                              <Icon className="h-5 w-5 text-pink-600" />
                             </div>
                             <h3 className="font-semibold text-sm mb-1">{feature.title}</h3>
                             <p className="text-xs text-muted-foreground">{feature.description}</p>
@@ -260,12 +259,11 @@ function SuccessContent() {
                       <Button
                         asChild
                         size="lg"
-                        className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-violet-500 to-purple-500 hover:opacity-90 shadow-lg shadow-violet-500/25"
+                        className="w-full h-12 text-base font-medium bg-pink-600 hover:bg-pink-700 text-white"
                       >
                         <Link href="/">
-                          <Sparkles className="mr-2 h-5 w-5" />
                           Commencer à Apprendre
-                          <ArrowRight className="ml-2 h-5 w-5" />
+                          <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                       </Button>
 

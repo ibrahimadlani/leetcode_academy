@@ -18,13 +18,10 @@ import { Badge } from "@/components/ui/badge";
 import {
   Check,
   ArrowLeft,
-  Sparkles,
   Zap,
   Shield,
   Clock,
-  Users,
-  Code2,
-  TrendingUp,
+  Sparkles,
   Infinity,
 } from "lucide-react";
 import Logo from "@/components/Logo";
@@ -37,13 +34,12 @@ const plans = [
     period: "/year",
     description: "Perfect for dedicated learners",
     icon: Zap,
-    gradient: "from-blue-500 to-cyan-500",
     features: [
-      { text: "Access to all 75 Blind75 problems", icon: Code2 },
-      { text: "Interactive visualizations", icon: TrendingUp },
-      { text: "Code solutions in 3 languages", icon: Code2 },
-      { text: "Progress tracking", icon: TrendingUp },
-      { text: "Priority support", icon: Shield },
+      "Access to all 75 Blind75 problems",
+      "Interactive visualizations",
+      "Code solutions in 3 languages",
+      "Progress tracking",
+      "Priority support",
     ],
   },
   {
@@ -53,13 +49,12 @@ const plans = [
     period: "",
     description: "Best value - pay once, learn forever",
     icon: Infinity,
-    gradient: "from-violet-500 to-purple-500",
     features: [
-      { text: "Everything in Yearly", icon: Check },
-      { text: "Lifetime access", icon: Infinity },
-      { text: "All future updates", icon: Sparkles },
-      { text: "Early access to new features", icon: Clock },
-      { text: "Exclusive Discord community", icon: Users },
+      "Everything in Yearly",
+      "Lifetime access",
+      "All future updates",
+      "Early access to new features",
+      "Exclusive Discord community",
     ],
     popular: true,
   },
@@ -122,10 +117,10 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background gradient effects */}
+      {/* Background effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-3xl" />
-        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-violet-500/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-pink-600/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-pink-600/5 to-transparent rounded-full blur-3xl" />
       </div>
 
       <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
@@ -146,8 +141,7 @@ export default function PricingPage() {
           animate="visible"
           className="text-center mb-16"
         >
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
-            <Sparkles className="h-4 w-4" />
+          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-600/10 text-pink-600 text-sm font-medium mb-6">
             Investissez dans votre carrière
           </motion.div>
 
@@ -173,7 +167,7 @@ export default function PricingPage() {
           animate="visible"
           className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
         >
-          {plans.map((plan, index) => {
+          {plans.map((plan) => {
             const Icon = plan.icon;
             return (
               <motion.div
@@ -190,8 +184,7 @@ export default function PricingPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="absolute -top-4 left-1/2 -translate-x-1/2 z-10"
                   >
-                    <Badge className={`bg-gradient-to-r ${plan.gradient} text-white border-0 px-4 py-1 shadow-lg`}>
-                      <Sparkles className="h-3 w-3 mr-1" />
+                    <Badge className="bg-pink-600 text-white border-0 px-4 py-1">
                       Le Plus Populaire
                     </Badge>
                   </motion.div>
@@ -200,24 +193,16 @@ export default function PricingPage() {
                 <Card
                   className={`relative h-full overflow-hidden transition-all duration-300 ${
                     plan.popular
-                      ? "border-2 border-primary/50 shadow-xl shadow-primary/10"
-                      : "border hover:border-primary/30"
+                      ? "border border-pink-600/50 bg-pink-600/5"
+                      : "border hover:border-pink-600/30"
                   }`}
                 >
-                  {/* Gradient overlay on hover */}
-                  <motion.div
-                    className={`absolute inset-0 bg-gradient-to-br ${plan.gradient} opacity-0 transition-opacity duration-300`}
-                    animate={{ opacity: hoveredPlan === plan.id ? 0.03 : 0 }}
-                  />
-
                   <CardHeader className="text-center pb-4 relative">
                     <motion.div
-                      className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${plan.gradient} p-0.5`}
+                      className={`w-16 h-16 mx-auto mb-4 rounded-2xl ${plan.popular ? "bg-pink-600/10" : "bg-muted"} flex items-center justify-center`}
                       whileHover={{ rotate: 5, scale: 1.05 }}
                     >
-                      <div className="w-full h-full rounded-2xl bg-background flex items-center justify-center">
-                        <Icon className={`h-8 w-8 bg-gradient-to-br ${plan.gradient} bg-clip-text text-transparent`} style={{ color: plan.popular ? '#8b5cf6' : '#3b82f6' }} />
-                      </div>
+                      <Icon className={`h-8 w-8 ${plan.popular ? "text-pink-600" : "text-muted-foreground"}`} />
                     </motion.div>
 
                     <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
@@ -233,40 +218,32 @@ export default function PricingPage() {
                         <span className="text-5xl font-bold">${plan.price}</span>
                         <span className="text-muted-foreground ml-1 text-lg">{plan.period}</span>
                       </motion.div>
-                      {plan.id === "lifetime" && (
-                        <p className="text-sm text-muted-foreground mt-2">Paiement unique</p>
-                      )}
                     </div>
 
                     <ul className="space-y-4 text-left">
-                      {plan.features.map((feature, featureIndex) => {
-                        const FeatureIcon = feature.icon;
-                        return (
-                          <motion.li
-                            key={featureIndex}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.1 * featureIndex + 0.3 }}
-                            className="flex items-center gap-3"
-                          >
-                            <div className={`flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br ${plan.gradient} p-0.5`}>
-                              <div className="w-full h-full rounded-lg bg-background flex items-center justify-center">
-                                <Check className="h-4 w-4 text-primary" />
-                              </div>
-                            </div>
-                            <span className="text-sm font-medium">{feature.text}</span>
-                          </motion.li>
-                        );
-                      })}
+                      {plan.features.map((feature, featureIndex) => (
+                        <motion.li
+                          key={featureIndex}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.1 * featureIndex + 0.3 }}
+                          className="flex items-center gap-3"
+                        >
+                          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-pink-600/10 flex items-center justify-center">
+                            <Check className="h-3.5 w-3.5 text-pink-600" />
+                          </div>
+                          <span className="text-sm">{feature}</span>
+                        </motion.li>
+                      ))}
                     </ul>
                   </CardContent>
 
                   <CardFooter className="pt-4">
                     <Button
-                      className={`w-full h-12 text-base font-semibold transition-all duration-300 ${
+                      className={`w-full h-12 text-base font-medium transition-all duration-300 ${
                         plan.popular
-                          ? `bg-gradient-to-r ${plan.gradient} hover:opacity-90 text-white shadow-lg shadow-violet-500/25`
-                          : ""
+                          ? "bg-pink-600 hover:bg-pink-700 text-white"
+                          : "hover:border-pink-600 hover:text-pink-600"
                       }`}
                       size="lg"
                       variant={plan.popular ? "default" : "outline"}
@@ -307,7 +284,7 @@ export default function PricingPage() {
             Des questions ?{" "}
             <a
               href="mailto:support@leetcode-academy.com"
-              className="text-primary hover:underline font-medium"
+              className="text-pink-600 hover:underline font-medium"
             >
               Contactez-nous
             </a>

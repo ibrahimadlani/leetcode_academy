@@ -1,6 +1,8 @@
 "use client";
 
 import { useSession, signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -12,10 +14,36 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, CreditCard, Crown } from "lucide-react";
+import { LogOut, CreditCard, Crown, Moon, Sun, Monitor } from "lucide-react";
 
 export default function UserMenu() {
   const { data: session, status } = useSession();
+  const { setTheme, theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const cycleTheme = () => {
+    if (theme === "light") setTheme("dark");
+    else if (theme === "dark") setTheme("system");
+    else setTheme("light");
+  };
+
+  const getThemeIcon = () => {
+    if (!mounted) return <Monitor className="mr-2 h-4 w-4" />;
+    if (theme === "dark") return <Moon className="mr-2 h-4 w-4" />;
+    if (theme === "light") return <Sun className="mr-2 h-4 w-4" />;
+    return <Monitor className="mr-2 h-4 w-4" />;
+  };
+
+  const getThemeLabel = () => {
+    if (!mounted) return "System";
+    if (theme === "dark") return "Dark";
+    if (theme === "light") return "Light";
+    return "System";
+  };
 
   if (status === "loading") {
     return (
@@ -63,11 +91,9 @@ export default function UserMenu() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/pricing">
-            <Crown className="mr-2 h-4 w-4" />
-            <span>Pricing</span>
-          </Link>
+        <DropdownMenuItem onClick={cycleTheme}>
+          {getThemeIcon()}
+          <span>Appearance: {getThemeLabel()}</span>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/billing">
